@@ -139,7 +139,7 @@ if __name__ == "__main__":
                     type=str,
                     default=["numenta"],
                     help="Comma separated list of detector(s) to use, e.g. "
-                         "null,numenta")
+                         "numenta, numentaTM, htmjava")
 
   parser.add_argument("-p", "--profilesFile",
                     default=os.path.join("config", "profiles.json"),

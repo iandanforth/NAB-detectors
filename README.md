@@ -1,11 +1,20 @@
 # NAB-detectors
 
-This is a companion repository for the [Numenta Anomaly Benchmark (NAB)](). If you are
-unfamiliar with NAB please refer to the main repository.
+This is a companion repository for the [Numenta Anomaly Benchmark
+(NAB)](https://github.com/numenta/NAB). If you are unfamiliar with NAB please
+refer to the main repository first.
 
 In 2019 the main body of the benchmark's code was ported to Python 3. The
-detector code was outside the scope of that project but is kept here for
-posterity.
+Numenta detector code was outside the scope of that project and was moved here.
+
+This repository can be used to replicate results listed on the scoreboard of
+the main repository for the following detectors:
+
+    numenta
+    numentaTM
+    htmjava  # See README.md in nab/detectors/htmjava for more additional setup
+
+## Installation
 
 ### Initial requirements
 
@@ -14,10 +23,15 @@ You need to manually install the following:
 - [Python 2.7](https://www.python.org/download/)
 - [pip](https://pip.pypa.io/en/latest/installing.html)
 - [NumPy](http://www.numpy.org/)
-- [NuPIC](http://www.github.com/numenta/nupic) (required to run the Numenta detector)
+- [NuPIC](http://www.github.com/numenta/nupic)
 
-##### Install the Python requirements
+### Clone this repository
 
+`git clone git@github.com:numenta/NAB-detectors.git`
+
+### Install the Python requirements
+
+    cd NAB-detectors
     (sudo) pip install -r requirements.txt
 
 This will install the required modules.
@@ -28,10 +42,11 @@ This will install the required modules.
 
 ### NAB Benchmark Data 
 
-The canonical benchmark data is stored in the main NAB repository so you will need to
-clone the main NAB repository.
+The canonical benchmark data is stored in the main NAB repository. You will need to
+clone the main NAB repository into a sibling directory.
 
-`git clone git@github.com:numenta/NAB.git`
+    cd ..
+    git clone git@github.com:numenta/NAB.git
 
 ### Running a Detector
 
@@ -42,9 +57,10 @@ directory.
 For example, to run the `numenta` detector move into the `NAB-detectors`
 repository and run:
 
-`python run.py -d numenta --detect --dataDir path/to/NAB/data/`
+    cd NAB-detectors
+    python run.py -d numenta --detect --rootDir path/to/NAB/
 
-Note that by default it tries to use all the cores on your machine. The above
+Note: By default `run.py` tries to use all the cores on your machine. The above
 command should take about 20-30 minutes on a current powerful laptop with 4-8
 cores.
 
@@ -57,7 +73,7 @@ to see all the options.
 
 Note that to replicate results exactly as in the NAB paper you may need to checkout
 the specific version of NuPIC (and associated nupic.core) that is noted in the
-[Scoreboard](https://github.com/numenta/NAB/wiki/NAB%20Scoreboard): **TODO: FIND THIS TAG**
+[Scoreboard](https://github.com/numenta/NAB#additional-scores):
 
     cd /path/to/nupic/
     git checkout -b nab {TAG NAME}
@@ -74,23 +90,18 @@ the files you want to run. This new file should be in exactly the same format as
 are interested in.
 
 **Example**: an example file containing two files is in
-`labels/combined_windows_tiny.json`.  The following command shows you how to run
-NAB on a subset of labels:
+`labels/combined_windows_tiny.json`. (Part of the main NAB repository) The following 
+command shows you how to run NAB on a subset of labels:
 
     cd /path/to/NAB-detectors
-    python run.py -d numenta --detect --windowsFile labels/combined_windows_tiny.json
+    python run.py -d numenta --detect --rootDir path/to/NAB --windowsFile labels/combined_windows_tiny.json
 
 This will run the `detect` phase of NAB on the data files specified in the above
 JSON file. Note that scoring and normalization are not supported with this
 option. Note also that you may see warning messages regarding the lack of labels
 for other files. You can ignore these warnings.
 
-### Scoring Detector Output
+### Detector Output
 
-After running a detector against the data the `NAB-detectors/results` directory will be populated.
-
-Optimization and scoring code are stored in the [main NAB repository]() and require Python 3.6+.
-
-Please follow the instructions on the README there on how to specify a custom results directory.
-
-
+After running a detector against the data the `path/to/NAB/results` directory
+will be updated with the results for the detector run.
