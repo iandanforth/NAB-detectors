@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # ----------------------------------------------------------------------
-# Copyright (C) 2014-2015, Numenta, Inc.  Unless you have an agreement
+# Copyright (C) 2014-2019, Numenta, Inc.  Unless you have an agreement
 # with Numenta, Inc., for a separate license for this software code, the
 # following terms and conditions apply:
 #
@@ -45,7 +45,7 @@ def getDetectorClassConstructors(detectors):
 
 def main(args):
 
-  root = os.path.dirname(os.path.realpath(__file__))
+  root = args.rootDir
 
   numCPUs = int(args.numCPUs) if args.numCPUs is not None else None
 
@@ -72,7 +72,7 @@ def main(args):
     runner.optimize(args.detectors)
 
   if args.score:
-    with open(args.thresholdsFile) as thresholdConfigFile:
+    with open(thresholdsFile) as thresholdConfigFile:
       detectorThresholds = json.load(thresholdConfigFile)
     runner.score(args.detectors, detectorThresholds)
 
@@ -115,6 +115,11 @@ if __name__ == "__main__":
                     default=False,
                     action="store_true")
 
+  parser.add_argument("--rootDir",
+                    default=os.path.dirname(os.path.realpath(__file__)),
+                    help="The base path to search for other NAB assets. Other" 
+                    "specified directory arguments will be relative to this path.")
+
   parser.add_argument("--dataDir",
                     default="data",
                     help="This holds all the label windows for the corpus.")
@@ -132,9 +137,7 @@ if __name__ == "__main__":
   parser.add_argument("-d", "--detectors",
                     nargs="*",
                     type=str,
-                    default=["null", "random", "skyline",
-                             "bayesChangePt", "windowedGaussian", "expose",
-                             "relativeEntropy", "earthgeckoSkyline"],
+                    default=["numenta"],
                     help="Comma separated list of detector(s) to use, e.g. "
                          "null,numenta")
 
@@ -171,36 +174,12 @@ if __name__ == "__main__":
   # The following imports are necessary for getDetectorClassConstructors to
   # automatically figure out the detector classes.
   # Only import detectors if used so as to avoid unnecessary dependency.
-  if "bayesChangePt" in args.detectors:
-    from nab.detectors.bayes_changept.bayes_changept_detector import (
-      BayesChangePtDetector)
-  if "null" in args.detectors:
-    from nab.detectors.null.null_detector import NullDetector
-  if "random" in args.detectors:
-    from nab.detectors.random.random_detector import RandomDetector
-  if "skyline" in args.detectors:
-    from nab.detectors.skyline.skyline_detector import SkylineDetector
-  if "windowedGaussian" in args.detectors:
-    from nab.detectors.gaussian.windowedGaussian_detector import (
-      WindowedGaussianDetector)
-  if "knncad" in args.detectors:
-    from nab.detectors.knncad.knncad_detector import KnncadDetector
-  if "relativeEntropy" in args.detectors:
-    from nab.detectors.relative_entropy.relative_entropy_detector import (
-      RelativeEntropyDetector)
-
-  # To run expose detector, you must have sklearn version 0.16.1 installed.
-  # Higher versions of sklearn may not be compatible with numpy version 1.9.2
-  # required to run nupic.
-  if "expose" in args.detectors:
-    from nab.detectors.expose.expose_detector import ExposeDetector
-
-  if "contextOSE" in args.detectors:
-    from nab.detectors.context_ose.context_ose_detector import (
-    ContextOSEDetector )
-
-  if "earthgeckoSkyline" in args.detectors:
-    from nab.detectors.earthgecko_skyline.earthgecko_skyline_detector import EarthgeckoSkylineDetector
+  if "numenta" in args.detectors:
+    from nab.detectors.numenta.numenta_detector import NumentaDetector
+  if "htmjava" in args.detectors:
+    from nab.detectors.htmjava.htmjava_detector import HtmjavaDetector
+  if "numentaTM" in args.detectors:
+    from nab.detectors.numenta.numentaTM_detector import NumentaTMDetector
 
   if args.skipConfirmation or checkInputs(args):
     main(args)
